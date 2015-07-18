@@ -54,31 +54,40 @@ def register(request):
 	if request.method == 'POST':
 		register_form = UserCreateForm(request.POST)
 		if register_form.is_valid():
-			# register_form.save()
+			# перевірка правильності всіх полів форми
 			if request.POST.get('is_staff'):
+				# якщо отримано запит на права доступу до "admin site" (поле is_staff відмічене)
+				# створює користувача в таблиці Tutor і зберігає в БД
 				new_user = Tutor.objects.create_user(username = request.POST.get('username'),
 													 first_name = request.POST.get('first_name'),
 													 last_name = request.POST.get('last_name'),
 													 email = request.POST.get('email'),
-													 password = request.POST.get('password1'),
-													 is_staff = True)
-
-				new_user = auth.authenticate(username=register_form.cleaned_data['username'], password=register_form.cleaned_data['password'])
+													 password = request.POST.get('password1')
+													 )
+				new_user.is_staff = True
+				new_user.save()
+				new_user = auth.authenticate(username = request.POST.get('username'), password = request.POST.get('password1'))
 				auth.login(request, new_user)
+				# авторизує користувача та повертає головну сторінку
 				return HttpResponseRedirect ('/exam/')
-				# args['register_success_msg'] = 'Registration Is Successful! Please Log In And Enjoy!'
-				# return render_to_response('register/login.html',args)
 			else:
+				# якщо НЕ отримано запит на права доступу до "admin site" (поле is_staff НЕ відмічене)
+				# створює користувача в таблиці Student і зберігає в БД
 				new_user = Student.objects.create_user(username = request.POST.get('username'),
-													   first_name = request.POST.get('first_name'),
-													   last_name = request.POST.get('last_name'),
-													   email = request.POST.get('email'),
-													   password = request.POST.get('password1'),
-													   is_staff = False)
-				new_user = auth.authenticate(username=register_form.cleaned_data['username'], password=register_form.cleaned_data['password'])
+													 first_name = request.POST.get('first_name'),
+													 last_name = request.POST.get('last_name'),
+													 email = request.POST.get('email'),
+													 password = request.POST.get('password1')
+													 )
+				new_user.is_staff = False
+				new_user.save()
+				new_user = auth.authenticate(username = request.POST.get('username'), password = request.POST.get('password1'))
 				auth.login(request, new_user)
+				# авторизує користувача та повертає головну сторінку
 				return HttpResponseRedirect ('/exam/')
 		else:
+			# якщо поля форми заповнені НЕ правильно,
+			# повертає повідомлення про помилку та форму реєстрації
 			args['register_error_msg'] = 'Try again!'
 			args['form'] = register_form
 	args_template = RequestContext(request, args)
