@@ -1,0 +1,17 @@
+{% extends 'main_site.html' %}
+
+{% block login%}
+
+	<form action="/user/register/" method="post">
+	{% csrf_token %}
+
+        {{ form.as_p }}
+
+		{% if register_error %}
+			<p><h2><label class="error">{{ register_error_msg }}</label></h2></p>
+        {% endif %}
+
+		<p><input class="button" type="submit" value="Register"></p>
+	</form>
+
+{%endblock%}

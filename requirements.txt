@@ -1,0 +1,16 @@
+Python 3.4.3
+
+pip 7.1.0
+
+virtualenv 13.0.3
+
+django 1.8.2
+
+distribute 0.7.3
+
+setuptools 18.0.1
+
+pillow 2.9.0
+
+HTML 5
+

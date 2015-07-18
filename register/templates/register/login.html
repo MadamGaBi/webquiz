@@ -1,0 +1,25 @@
+{% extends 'main_site.html' %}
+
+{% block login%}
+
+	<form action="/user/login/" method="post">
+	{% csrf_token %}
+
+		{% if register_success %}
+            <p> {{register_success_msg}} </p>
+        {% endif %}
+
+		<p><label for="username"> Username </label>
+		<input type="text" name="username" id="username" placeholder="Enter username" required></p>
+		<label for="password"> Password </label>
+		<input type="password" name="password" id="password" placeholder="Enter password" required>
+
+		{% if login_error %}
+			   <p><h2><label class="error">{{ login_error }}</label></h2></p>
+		{% endif %}
+
+		<p><input class="button" type="submit" value="Log in"></p>
+	</form>
+
+
+{%endblock%}

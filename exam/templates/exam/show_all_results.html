@@ -1,0 +1,25 @@
+{% extends 'main_site.html' %}
+
+{% block exam%}
+
+{% if username %}
+    <h2>Topic: {{show_topic.topic_name}}</h2>
+    {% if error_msg %}
+        <p>{{error_msg}}</p>
+    {% else %}
+        {%csrf_token%}
+        {% for student in students_list%}
+            {% for mark in marks_list%}
+                {% if mark.student_id_id = student.id %}
+                    <div>
+                        {{student.first_name}} {{student.last_name}} --- {{mark}}
+                    </div>
+                {% endif %}
+            {% endfor %}
+        {% endfor %}
+    {% endif %}
+{% else %}
+    <p> <h2> Log in and try again! </h2></p>
+{% endif %}
+
+{%endblock%}

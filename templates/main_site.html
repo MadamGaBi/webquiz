@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+
+    <meta charset="UTF-8">
+
+    <title>Main Page</title>
+</head>
+<body>
+
+	<div class="top-bar">
+		<section class="top=bar-section">
+			<ul class="right">
+				{% if username %}
+					<p><b> Hello, {{ username }}! </b><a href="/user/logout/"> Logout</a></p>
+				{% else %}
+					<p><a href="/user/login/"> Log in </a>  or  <a href="/user/register/"> Register </a></p>
+				{% endif %}
+			</ul>
+		</section>
+	</div>
+
+<h1><a href="/exam/">Exam Your IT-knowledge</a></h1>
+
+<!-- find next block "exam" in
+exam/templates/exam/show_list_of_topics.html
+&
+exam/templates/exam/show_questions_of_topic.html -->
+{% block exam%}{%endblock%}
+
+<!-- find next block "login" in
+register/templates/register/login.html -->
+{% block login%}{%endblock%}
+
+</body>
+</html>
