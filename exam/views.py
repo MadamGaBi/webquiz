@@ -5,7 +5,6 @@ from django.shortcuts import render, get_object_or_404, render_to_response
 from django.http.response import HttpResponse, HttpResponseRedirect
 from django.template import Context, loader
 from django.template.loader import get_template
-# from django.views import generic
 from .models import Tutor, Student, Topic, Question, Result, Answer
 from django.contrib import auth
 from django.core.exceptions import ObjectDoesNotExist
@@ -14,30 +13,20 @@ from django.core.context_processors import csrf
 # Create your views here.
 #_______________________________________________________________________________________________________________________
 
-def index(request):
-    return HttpResponse("Hello, everybody. You are at the exams index now.")
-
-def topics(request, topic_id):
-    t = get_template('exam/topic.html')
-    html = t.render(Context({'name': topic_id}))
-    return HttpResponse(html)
-
-def questions(request, question_id, topic_id):
-    t = get_template('exam/question.html')
-    html = t.render(Context({'name_1': question_id, 'name_2': topic_id}))
-    return HttpResponse(html)
-
-def results(request, topic_id, student_id):
-    t = get_template('exam/result.html')
-    html = t.render(Context({'name_1': Topic.objects.get(id = topic_id), 'name_2': Result.objects.get(student_id_id = student_id, topic_id_id = topic_id)}))
-    return HttpResponse(html)
+# def index(request):
+#     return HttpResponse("Hello, everybody. You are at the exams index now.")
 #_______________________________________________________________________________________________________________________
 
 def show_list_of_topics(request):
-    #Повертає СПИСОК всіх ТЕМ
-    return render_to_response("exam/show_list_of_topics.html", {'show_list_of_topics': Topic.objects.all(),
-                                                                'username': auth.get_user(request).username
-                                                                })
+    # Повертає СПИСОК всіх ТЕМ
+    args = {}
+    args.update(csrf(request))
+    args['show_list_of_topics'] = Topic.objects.all()
+    args['username'] = auth.get_user(request).username
+    if not auth.get_user(request).is_staff:
+    # Якщо авторизований студент, то показує його результат по кожній темі, яку він проходив
+        args['marks_list_user'] = Result.objects.filter(student_id_id = auth.get_user(request).id)
+    return render_to_response('exam/show_list_of_topics.html', args)
 #_______________________________________________________________________________________________________________________
 
 def show_questions_of_topic(request, topic_id = 1):
@@ -79,30 +68,34 @@ def show_questions_of_topic(request, topic_id = 1):
         # інакше (якщо авторизований студент)
         # повертає СПИСОК ПИТАНЬ з варіантами відповідей для вибраної теми
         return render_to_response('exam/show_questions_of_topic.html',args)
-
 #_______________________________________________________________________________________________________________________
 
-# class ResultView(generic.DetailView):
-#     model = Result
-#     template_name = "exam/result.html"
-#_______________________________________________________________________________________________________________________
-#
-# def exam_ticket(request, topic_id = 1):
-#     p = get_object_or_404(Topic, pk = topic_id)
-#     try:
-#         selected_answer = p.answer_text_set.get(pk = request.POST['answer_text'])
-#     except(KeyError, Answer.DoesNotExist):
-#         return render(request, "exam/show_questions_of_topic.html", {
-#          'questions': p,
-#          'error_message': "",
-#         })
-#     else:
-#         if selected_answer.is_correct != 0:
-#             result.mark += selected_answer.is_correct
-#             result.mark.save()
+def exam_result(request, topic_id):
+    # Обчислює та повертає РЕЗУЛЬТАТ ТЕСТУ для студента
+    args = {}
+    args.update(csrf(request))
 
+    def count_mark(answers_list, marks_value = 0):
+        for answer in answers_list:
+            if request.POST('answer.id'):
+                marks_value = marks_value + answer.is_correct
+        return marks_value
 
+    answers_list = []
+    def show_answers_list(show_questions, show_answers):
+        # Повертає СПИСОК ВАРІАНТІВ ВІДПОВІДЕЙ вибраної теми
+        for question in show_questions:
+            answers_list.append(show_answers.filter(question_id_id = question.id))
+        return answers_list
 
+    answers_list = show_answers_list(Question.objects.filter(topic_id_id = topic_id), Answer.objects.all())
 
+    if not Result.objects.get(student_id_id = auth.get_user(request).id, topic_id_id = topic_id):
+        final_result = Result.objects.create(student_id_id = auth.get_user(request).id, topic_id_id = topic_id)
+    else:
+        final_result = Result.objects.get(student_id_id = auth.get_user(request).id, topic_id_id = topic_id)
 
+    final_result.mark = count_mark(answers_list)
+    final_result.save()
 
+    return render_to_response("exam/show_list_of_topics.html", args)

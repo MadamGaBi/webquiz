@@ -5,10 +5,6 @@
 	<form action="/user/login/" method="post">
 	{% csrf_token %}
 
-		{% if register_success %}
-            <p> {{register_success_msg}} </p>
-        {% endif %}
-
 		<p><label for="username"> Username </label>
 		<input type="text" name="username" id="username" placeholder="Enter username" required></p>
 		<label for="password"> Password </label>

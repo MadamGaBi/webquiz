@@ -3,26 +3,30 @@
 {% block exam%}
 
 {% if username %}
+    <form action="/exam/" method="post">
     <h2>Topic: {{show_topic.topic_name}}</h2>
+
+    {% if error_message %}
+          <p> <strong>{{ error_message }}</strong></p>
+    {% endif %}
 
     {% for question in show_questions %}
         <p><b>Question: {{question.question_text}}</b></p>
-        <form action="exam/{{topic_id}}/results/" method="post">
+
         {%csrf_token%}
         {% for answers in answers_list%}
             {% for answer in answers %}
                 {% if answer.question_id_id = question.id %}
                     <div>
-                        <input type="checkbox" name="{{answer}}" id="answer{{forloop.counter}}" value="{{answer.id}}"/>
+                        <input type="checkbox" id="answer{{forloop.counter}}" value="{{answer.id}}"/>
                         <label for="answer{{forloop.counter}}">{{answer.answer_text}}</label>
                     </div>
                 {% endif %}
             {% endfor %}
         {% endfor %}
-        </form>
     {% endfor %}
-
-    <p><input type="submit" value="Submit" ></p>
+    <p><input type="submit" value="Submit"></p>
+    </form>
 
 {% else %}
     <p> <h2> Log in and try again! </h2></p>

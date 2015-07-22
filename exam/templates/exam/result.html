@@ -1,4 +1,14 @@
+{% extends 'main_site.html' %}
 
-<h1>Good job! Your result of {{name_1}} test is {{name_2}}.</h1>
+{% block exam%}
 
-<a href="/exam/">Pass test again?</a>
+{% if username %}
+{% csrf_token %}
+
+    <h1>Good job! Your result of test is {{marks_value}}.</h1>
+
+    <a href="/exam/">Pass test again?</a>
+
+{% endif %}
+
+{%endblock%}

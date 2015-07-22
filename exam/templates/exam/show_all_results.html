@@ -2,7 +2,10 @@
 
 {% block exam%}
 
+<form action="exam/{{topic_id}}/" method="post">
 {% if username %}
+
+    {%csrf_token%}
     <h2>Topic: {{show_topic.topic_name}}</h2>
     {% if error_msg %}
         <p>{{error_msg}}</p>
@@ -21,5 +24,6 @@
 {% else %}
     <p> <h2> Log in and try again! </h2></p>
 {% endif %}
+</form>
 
 {%endblock%}
