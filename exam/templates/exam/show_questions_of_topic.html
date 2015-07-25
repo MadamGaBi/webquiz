@@ -3,7 +3,7 @@
 {% block exam%}
 
     {% if username %}
-        <h2>Topic: {{show_topic.topic_name}}</h2>
+        <h2>{{show_topic.topic_name}}</h2>
 
         <form action='/exam/{{ show_topic.id }}/result/' method="post">
         {%csrf_token%}
@@ -15,24 +15,29 @@
             {% endif %}
 
             {% for question in show_questions %}
-                <div>
-                    <b>Question: {{question.question_text}}</b>
-                </div>
-
-                {% for answers in answers_list%}
-                    {% for answer in answers %}
-                        {% if answer.question_id_id = question.id %}
-                            <div>
-                                <input type="checkbox" name="answer" id="answer{{forloop.counter}}" value="{{answer.id}}"/>
-                                <label for="answer{{forloop.counter}}">{{answer.answer_text}}</label>
-                            </div>
-                        {% endif %}
-                    {% endfor %}
-                {% endfor %}
+                <table class="table">
+                    <thead>
+                        <tr class="success">
+                            <th><b>{{question.question_text}}</b></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="info">
+                        <td>{% for answers in answers_list%}
+                            {% for answer in answers %}
+                                {% if answer.question_id_id = question.id %}
+                                    <input type="checkbox" name="answer" id="answer{{forloop.counter}}" value="{{answer.id}}"/>
+                                    <label for="answer{{forloop.counter}}">{{answer.answer_text}}</label>
+                                {% endif %}
+                            {% endfor %}
+                        {% endfor %}</td>
+                        </tr>
+                    </tbody>
+                </table>
             {% endfor %}
 
             <div>
-                <input type="submit" value="Check" class="btn btn-large btn-block btn-success">
+                <input type="submit" value="Check" class="btn btn-large btn-block btn-primary">
             </div>
         </form>
 

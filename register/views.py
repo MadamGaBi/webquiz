@@ -4,11 +4,9 @@
 from django.shortcuts import render_to_response, redirect
 from django.contrib import auth
 from django.http import HttpResponseRedirect
-from django.contrib.auth.forms import UserCreationForm
 from django.core.context_processors import csrf
 from .forms import UserCreateForm
 from django.template import RequestContext
-from django.db import IntegrityError
 from exam.models import Tutor, Student, Topic, Question, Result, Answer
 
 # Create your views here.

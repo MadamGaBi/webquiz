@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from django.utils.translation import ugettext, ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _
 
 
 class UserCreateForm(UserCreationForm):
@@ -18,10 +18,8 @@ class UserCreateForm(UserCreationForm):
     password2 = forms.CharField(max_length=50,
                                 label=("Password confirmation"),
                                 widget=forms.PasswordInput)
-                                # help_text=_("Enter the same password as above, for verification."))
     is_staff = forms.BooleanField(required=False,
-                                  label=(""),
-                                  help_text=_("Tick if you are a Tutor! Be honest!"))
+                                  label=("Tick if you are a Tutor! Be honest!"))
 
     class Meta:
         model = User
