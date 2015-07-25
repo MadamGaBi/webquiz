@@ -2,24 +2,27 @@
 
 {% block exam%}
 
-{% for topic in show_list_of_topics %}
-    <h2><a href="{{topic.id}}/"> {{topic.topic_name}} </a></h2>
-    <h5>Short Description: {{topic.topic_description}}</h5>
-
-        {% if username %}
-
-            {% if marks_list_user %}
-
-                {% for mark in marks_list_user %}
-                    {% if mark.topic_id_id = topic.id %}
-                        <h3> You Result Of This Topic Is {{mark}} .</h3>
+{% csrf_token %}
+<div class="center-block" style="padding-top:35px">
+    <div class="row">
+    {% for topic in show_list_of_topics %}
+        <div class="col-sm-6">
+            <div class="well">
+                <h2><a href="{{topic.id}}/"> {{topic.topic_name}} </a></h2>
+                <h5>{{topic.topic_description}}</h5>
+                {% if username %}
+                    {% if marks_list_user %}
+                        {% for mark in marks_list_user %}
+                            {% if mark.topic_id_id = topic.id %}
+                                <h3> You Result Of This Topic Is {{mark}} .</h3>
+                            {% endif %}
+                        {% endfor %}
                     {% endif %}
-
-                {% endfor %}
-
-            {% endif %}
-        {% endif %}
-
-{% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+    </div>
+</div>
 
 {%endblock%}

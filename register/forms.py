@@ -17,8 +17,8 @@ class UserCreateForm(UserCreationForm):
                                 widget=forms.PasswordInput)
     password2 = forms.CharField(max_length=50,
                                 label=("Password confirmation"),
-                                widget=forms.PasswordInput,
-                                help_text=_("Enter the same password as above, for verification."))
+                                widget=forms.PasswordInput)
+                                # help_text=_("Enter the same password as above, for verification."))
     is_staff = forms.BooleanField(required=False,
                                   label=(""),
                                   help_text=_("Tick if you are a Tutor! Be honest!"))

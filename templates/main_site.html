@@ -1,30 +1,55 @@
 <!DOCTYPE html>
 <html>
-<head lang="en">
+    <head lang="en">
+        <meta charset="UTF-8">
+            <title>Exam site</title>
 
-    <meta charset="UTF-8">
+            {% load staticfiles %}
 
-    <title>Exam site</title>
-</head>
-<body>
+            <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}" >
 
-    {% if username %}
-	    <p><b> Hello, {{ username }}! </b><a href="/user/logout/"> Logout</a></p>
-	{% else %}
-	    <p><a href="/user/login/"> Log in </a>  or  <a href="/user/register/"> Register </a></p>
-	{% endif %}
+    </head>
+    <body>
+        <div class="container">
+            <nav class="navbar navbar-inverse">
+                <div class="container-fluid">
+                    <ul class="nav navbar-nav navbar-right">
+                        {% if username %}
+                            <li><a href=""> Hello, {{ username }}! </a> </li>
+                            <li><a href="/user/logout/"><span class="glyphicon glyphicon-remove-sign"></span> Logout</a></li>
+	                    {% else %}
+                            <li><a href="/user/login/"><span class="glyphicon glyphicon-ok-sign"></span> Log in</a></li>
+                            <li><a href="/user/register/"><span class="glyphicon glyphicon-plus-sign"></span> Register</a></li>
+                	    {% endif %}
+                    </ul>
+                </div>
+            </nav>
+        </div>
+        <div class="container" ">
+            <div class="row">
+                <div class="col-sm-8">
+                    <h1><a href="/exam/"><img src="/static/images/index.jpg"  width="200" height="110"> Exam Your IT-knowledge </a></h1>
+                </div>
 
-<h1><a href="/exam/">Exam Your IT-knowledge</a></h1>
+                <div class="col-sm-4" style="padding-top:30px">
+                    <blockquote>
+                        <h5><i><b><p class="text-right">To know what you know and what you do not know, that is true knowledge.</p></b>
+                        <p class="text-right">Confucius</p></i></h5>
+                    </blockquote>
+                </div>
 
-<!-- find next block "exam" in
-exam/templates/exam/show_list_of_topics.html
-&
-exam/templates/exam/show_questions_of_topic.html -->
-{% block exam%}{%endblock%}
+            </div>
+            <!-- find next block "exam" in
+            exam/templates/exam/show_list_of_topics.html
+            &
+            exam/templates/exam/show_questions_of_topic.html -->
+            {% block exam%}{%endblock%}
 
-<!-- find next block "login" in
-register/templates/register/login.html -->
-{% block login%}{%endblock%}
+{#            {% block result%}{%endblock%}#}
 
-</body>
+            <!-- find next block "login" in
+            register/templates/register/login.html -->
+            {% block login%}{%endblock%}
+        </div>
+    </body>
 </html>

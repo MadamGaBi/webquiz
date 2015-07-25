@@ -2,35 +2,45 @@
 
 {% block exam%}
 
-{% if username %}
-    <form action="/exam/" method="post">
-    <h2>Topic: {{show_topic.topic_name}}</h2>
+    {% if username %}
+        <h2>Topic: {{show_topic.topic_name}}</h2>
 
-    {% if error_message %}
-          <p> <strong>{{ error_message }}</strong></p>
-    {% endif %}
-
-    {% for question in show_questions %}
-        <p><b>Question: {{question.question_text}}</b></p>
-
+        <form action='/exam/{{ show_topic.id }}/result/' method="post">
         {%csrf_token%}
-        {% for answers in answers_list%}
-            {% for answer in answers %}
-                {% if answer.question_id_id = question.id %}
-                    <div>
-                        <input type="checkbox" id="answer{{forloop.counter}}" value="{{answer.id}}"/>
-                        <label for="answer{{forloop.counter}}">{{answer.answer_text}}</label>
-                    </div>
-                {% endif %}
-            {% endfor %}
-        {% endfor %}
-    {% endfor %}
-    <p><input type="submit" value="Submit"></p>
-    </form>
 
-{% else %}
-    <p> <h2> Log in and try again! </h2></p>
-{% endif %}
+            {% if error_message %}
+                <div class="alert alert-danger" role="alert">
+                    <p> <strong>{{ error_message }}</strong></p>
+                </div>
+            {% endif %}
+
+            {% for question in show_questions %}
+                <div>
+                    <b>Question: {{question.question_text}}</b>
+                </div>
+
+                {% for answers in answers_list%}
+                    {% for answer in answers %}
+                        {% if answer.question_id_id = question.id %}
+                            <div>
+                                <input type="checkbox" name="answer" id="answer{{forloop.counter}}" value="{{answer.id}}"/>
+                                <label for="answer{{forloop.counter}}">{{answer.answer_text}}</label>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                {% endfor %}
+            {% endfor %}
+
+            <div>
+                <input type="submit" value="Check" class="btn btn-large btn-block btn-success">
+            </div>
+        </form>
+
+    {% else %}
+            <div class="alert alert-danger" role="alert">
+                <h3> Please, Log in and try again! </h3>
+            </div>
+    {% endif %}
 
 {%endblock%}
 

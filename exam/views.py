@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: UTF-8 -*-
 
-from django.shortcuts import render, get_object_or_404, render_to_response
+from django.shortcuts import render, get_object_or_404, render_to_response, redirect
 from django.http.response import HttpResponse, HttpResponseRedirect
 from django.template import Context, loader
 from django.template.loader import get_template
@@ -9,6 +9,7 @@ from .models import Tutor, Student, Topic, Question, Result, Answer
 from django.contrib import auth
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.context_processors import csrf
+from django.core.urlresolvers import reverse
 
 # Create your views here.
 #_______________________________________________________________________________________________________________________
@@ -29,7 +30,7 @@ def show_list_of_topics(request):
     return render_to_response('exam/show_list_of_topics.html', args)
 #_______________________________________________________________________________________________________________________
 
-def show_questions_of_topic(request, topic_id = 1):
+def show_questions_of_topic(request, topic_id):
     # Повертає для вибраної теми СПИСОК ПИТАНЬ з варіантами відповідей --- ДЛЯ СТУДЕНТА
     # або СПИСОК студентів та їх РЕЗУЛЬТАТІВ --- ДЛЯ ТЬЮТОРА
     args = {}
@@ -63,22 +64,25 @@ def show_questions_of_topic(request, topic_id = 1):
         args['marks_list'] = show_mark_for_student(args['students_list'])
         if marks_list == []:
             args['error_msg'] = 'Thank You For Visiting, But Currently No One Took The Test Of This Topic.'
-        return render_to_response('exam/show_all_results.html',args)
+        return render_to_response('exam/show_all_results.html', args)
     else:
         # інакше (якщо авторизований студент)
         # повертає СПИСОК ПИТАНЬ з варіантами відповідей для вибраної теми
-        return render_to_response('exam/show_questions_of_topic.html',args)
+        return render_to_response('exam/show_questions_of_topic.html', args)
 #_______________________________________________________________________________________________________________________
 
-def exam_result(request, topic_id):
+def result(request, topic_id):
     # Обчислює та повертає РЕЗУЛЬТАТ ТЕСТУ для студента
     args = {}
     args.update(csrf(request))
 
     def count_mark(answers_list, marks_value = 0):
-        for answer in answers_list:
-            if request.POST('answer.id'):
-                marks_value = marks_value + answer.is_correct
+        # Повертає ОЦІНКУ за весь тест з обраної теми,
+        # перевіряючи по списку всіх відповідей теми чи було прийняте відповідне значення id
+        for answers in answers_list:
+            for answer in answers:
+                if answer.id in request.POST.getlist('answer.id'):
+                    marks_value += answer.is_correct
         return marks_value
 
     answers_list = []
@@ -88,14 +92,18 @@ def exam_result(request, topic_id):
             answers_list.append(show_answers.filter(question_id_id = question.id))
         return answers_list
 
-    answers_list = show_answers_list(Question.objects.filter(topic_id_id = topic_id), Answer.objects.all())
+    if not auth.get_user(request).is_staff:
+        answers_list = show_answers_list(Question.objects.filter(topic_id_id = topic_id), Answer.objects.all())
 
-    if not Result.objects.get(student_id_id = auth.get_user(request).id, topic_id_id = topic_id):
-        final_result = Result.objects.create(student_id_id = auth.get_user(request).id, topic_id_id = topic_id)
-    else:
-        final_result = Result.objects.get(student_id_id = auth.get_user(request).id, topic_id_id = topic_id)
+        if Result.objects.get(student_id_id = auth.get_user(request).id, topic_id_id = topic_id):
+            final_result = Result.objects.get(student_id_id = auth.get_user(request).id, topic_id_id = topic_id)
+        else:
+            final_result = Result.objects.create(student_id_id = auth.get_user(request).id, topic_id_id = topic_id)
 
-    final_result.mark = count_mark(answers_list)
-    final_result.save()
+        final_result.mark = count_mark(answers_list)
+        final_result.save()
+        args['show_topic'] = Topic.objects.get(id = topic_id)
+        args['marks_value'] = final_result.mark
 
-    return render_to_response("exam/show_list_of_topics.html", args)
+    # return show_list_of_topics(request)
+    return redirect("/exam/", args)
