@@ -81,7 +81,7 @@ def result(request, topic_id):
         # перевіряючи по списку всіх відповідей теми чи було прийняте відповідне значення id
         for answers in answers_list:
             for answer in answers:
-                if answer.id in request.POST.getlist('answer.id'):
+                if str(answer.id) in request.POST.getlist('answer'):
                     marks_value += answer.is_correct
         return marks_value
 
@@ -101,6 +101,8 @@ def result(request, topic_id):
             final_result = Result.objects.create(student_id_id = auth.get_user(request).id, topic_id_id = topic_id)
 
         final_result.mark = count_mark(answers_list)
+        print(answers_list)
+        print(final_result.mark)
         final_result.save()
         args['show_topic'] = Topic.objects.get(id = topic_id)
         args['marks_value'] = final_result.mark

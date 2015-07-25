@@ -1,25 +1,30 @@
 {% extends 'main_site.html' %}
 
+{% load bootstrap %}
+
 {% block login%}
 
     <div class="container">
-        <div class="center-block" style="width:520px; padding-top:60px">
+        <div class="center-block" style="width:520px; padding-top:50px">
 	        <form action="/user/register/" method="post" class="form-horizontal" role="form">
 	            {% csrf_token %}
 
-                {{ form.as_p }}
+	            <div class="form-group">
+                    <div class="col-sm-offset-3 col-sm-9">
+                		{{ form | bootstrap }}
+					</div>
+				</div>
 
 		        {% if register_error_msg %}
-
-			       <h2><label class="error">{{ register_error_msg }}</label></h2>
-
+ 		            <h2><label class="error">{{ register_error_msg }}</label></h2>
                 {% endif %}
 
 	            <div class="form-group">
-                    <div class="col-sm-offset-2 col-sm-10">
+                    <div class="col-sm-offset-3 col-sm-9">
 		                <input type="submit" class="btn btn-primary btn-block" value="Register">
                     </div>
                 </div>
+
 			</form>
 		</div>
 	</div>
