@@ -5,6 +5,7 @@ from django.shortcuts import render_to_response, redirect
 from .models import Tutor, Student, Topic, Question, Result, Answer
 from django.contrib import auth
 from django.core.context_processors import csrf
+from django.http import HttpResponseRedirect
 
 # Create your views here.
 #_______________________________________________________________________________________________________________________
@@ -15,10 +16,23 @@ def show_list_of_topics(request):
     args.update(csrf(request))
     args['show_list_of_topics'] = Topic.objects.all()
     args['username'] = auth.get_user(request).username
+    if auth.get_user(request).is_staff:
+        args['add_topic'] = "Please, fill in the following fields to add a new topic."
     if not auth.get_user(request).is_staff:
     # Якщо авторизований студент, то показує його результат по кожній темі, яку він проходив
         args['marks_list_user'] = Result.objects.filter(student_id_id = auth.get_user(request).id)
     return render_to_response('exam/show_list_of_topics.html', args)
+#_______________________________________________________________________________________________________________________
+
+def addtopic(request):
+    # Додає НОВУ ТЕМУ в базу даних
+    if request.method == 'POST':
+        new_topic = Topic.objects.create(topic_name = request.POST.get('topic_name'),
+                                         topic_description = request.POST.get('topic_description'))
+        new_topic.save()
+        return HttpResponseRedirect('/exam/')
+    else:
+        return render_to_response('exam/show_list_of_topics.html')
 #_______________________________________________________________________________________________________________________
 
 def show_answers_list(show_questions, show_answers):
@@ -55,11 +69,16 @@ def show_questions_of_topic(request, topic_id):
         args['marks_list'] = show_mark_for_student(args['students_list'], topic_id)
         if args['marks_list'] == []:
             args['error_msg'] = 'Thank You for visiting, but currently no one took the test of this topic.'
+        args['add_question'] = "Please, fill in the following fields to add a new question to this topic."
         return render_to_response('exam/show_all_results.html', args)
     else:
         # інакше (якщо авторизований студент)
         # повертає СПИСОК ПИТАНЬ з варіантами відповідей для вибраної теми
         return render_to_response('exam/show_questions_of_topic.html', args)
+#_______________________________________________________________________________________________________________________
+
+# def addquestion(request, topic_id, tutor_id):
+#     pass
 #_______________________________________________________________________________________________________________________
 
 def result(request, topic_id):
@@ -91,3 +110,4 @@ def result(request, topic_id):
         args['marks_value'] = final_result.mark
 
     return redirect("/exam/", args)
+#_______________________________________________________________________________________________________________________

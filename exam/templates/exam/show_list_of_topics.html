@@ -3,7 +3,7 @@
 {% block exam%}
 
 {% csrf_token %}
-<div class="center-block" style="padding-top:35px">
+<div class="center-block" style="padding-top:35px" xmlns="http://www.w3.org/1999/html">
     <div class="row">
     {% for topic in show_list_of_topics %}
         <div class="col-sm-6">
@@ -14,7 +14,7 @@
                     {% if marks_list_user %}
                         {% for mark in marks_list_user %}
                             {% if mark.topic_id_id = topic.id %}
-                                <h3> You Result Of This Topic Is {{mark}} .</h3>
+                                <h4> You Result Of This Topic Is {{mark}} .</h4>
                             {% endif %}
                         {% endfor %}
                     {% endif %}
@@ -23,6 +23,30 @@
         </div>
     {% endfor %}
     </div>
-</div>
 
+    {% if add_topic %}
+        <div>
+            <p>{{ add_topic }}</p>
+        </div>
+        <form action="/exam/addtopic/" method="post" class="form-inline" role="form">
+            {% csrf_token %}
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1">Topic name</span>
+                <input type="text" class="form-control" name="topic_name" id="topic_name" required>
+            </div>
+            <div class="input-group">
+                <span class="input-group-addon" id="basic-addon1">Short description</span>
+                <input type="text" class="form-control" name="topic_description" id="topic_description" required>
+            </div>
+            <div class="form-group">
+                <input type="submit" class="btn btn-info" value="Add">
+            </div>
+
+            <div class="pull-right" style="padding-top:15px">
+			    <p><span class="glyphicon glyphicon-copyright-mark"> </span> Made by GaBi.</p>
+		    </div>
+
+        </form>
+    {% endif %}
+</div>
 {%endblock%}

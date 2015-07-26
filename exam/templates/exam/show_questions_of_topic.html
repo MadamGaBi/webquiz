@@ -26,8 +26,10 @@
                         <td>{% for answers in answers_list%}
                             {% for answer in answers %}
                                 {% if answer.question_id_id = question.id %}
-                                    <input type="checkbox" name="answer" id="answer{{forloop.counter}}" value="{{answer.id}}"/>
-                                    <label for="answer{{forloop.counter}}">{{answer.answer_text}}</label>
+                                    <div>
+                                        <input type="checkbox" name="answer" id="answer{{forloop.counter}}" value="{{answer.id}}"/>
+                                        <label for="answer{{forloop.counter}}">{{answer.answer_text}}</label>
+                                    </div>
                                 {% endif %}
                             {% endfor %}
                         {% endfor %}</td>
@@ -36,14 +38,20 @@
                 </table>
             {% endfor %}
 
-            <div>
-                <input type="submit" value="Check" class="btn btn-large btn-block btn-primary">
-            </div>
+            {% if show_questions %}
+                <div>
+                    <input type="submit" value="Check" class="btn btn-large btn-block btn-primary">
+                </div>
+            {% else %}
+                    <div class="alert alert-danger" role="alert">
+                        <p><strong>Thank You for visiting, but currently there are no questions of this topic.</strong></p>
+                    </div>
+            {% endif %}
         </form>
 
     {% else %}
-            <div class="alert alert-danger" role="alert">
-                <h3> Please, Log in and try again! </h3>
+            <div class="alert alert-danger">
+                <h3><strong> Please, Log in and try again! </strong></h3>
             </div>
     {% endif %}
 
