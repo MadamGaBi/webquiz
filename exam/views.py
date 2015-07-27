@@ -77,8 +77,28 @@ def show_questions_of_topic(request, topic_id):
         return render_to_response('exam/show_questions_of_topic.html', args)
 #_______________________________________________________________________________________________________________________
 
-# def addquestion(request, topic_id, tutor_id):
-#     pass
+def addquestion(request, topic_id):
+    # Додає НОВЕ ПИТАННЯ з трьома варіантами відповідей для відповідної теми
+    if request.method == 'POST':
+        new_question = Question.objects.create(question_text = request.POST.get('question_text'),
+                                               tutor_id_id = auth.get_user(request).id,
+                                               topic_id_id = topic_id)
+        new_question.save()
+        new_answer_1 = Answer.objects.create(answer_text = request.POST.get('answer_text_1'),
+                                           is_correct = request.POST.get('is_correct_1'),
+                                           question_id_id = new_question.id)
+        new_answer_1.save()
+        new_answer_2 = Answer.objects.create(answer_text = request.POST.get('answer_text_2'),
+                                           is_correct = request.POST.get('is_correct_2'),
+                                           question_id_id = new_question.id)
+        new_answer_2.save()
+        new_answer_3 = Answer.objects.create(answer_text = request.POST.get('answer_text_3'),
+                                           is_correct = request.POST.get('is_correct_3'),
+                                           question_id_id = new_question.id)
+        new_answer_3.save()
+        return HttpResponseRedirect('/exam/')
+    else:
+        return render_to_response('exam/show_all_results.html')
 #_______________________________________________________________________________________________________________________
 
 def result(request, topic_id):

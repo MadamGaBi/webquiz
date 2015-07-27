@@ -36,58 +36,73 @@
     {% endif %}
 </form>
 
-{#<div class="container">#}
-{#    {% if add_question %}#}
-{#        <div>#}
-{#            <p>{{ add_question }}</p>#}
-{#        </div>#}
-{#        <form action="/exam/addquestion/" method="post" class="form-horizontal" role="form">#}
-{#            {% csrf_token %}#}
-{#            <div class="form-group">#}
-{#                <div class="input-group">#}
-{#                <span class="input-group-addon" id="basic-addon1">Questions text</span>#}
-{#                <input type="text" class="form-control" name="question_text" id="question_text" required>#}
-{#                </div>#}
-{#            </div>#}
-{##}
-{#            <div class="form-group">#}
-{#                <div class="input-group">#}
-{#                <span class="input-group-addon" id="basic-addon1">Answer 1</span>#}
-{#                <input type="text" class="form-control" name="answer_text" id="answer_text" required>#}
-{##}
-{#                <span class="input-group-addon" id="basic-addon1">Value 1</span>#}
-{#                <input type="text" class="form-control" name="is_correct" id="is_correct" required>#}
-{#                </div>#}
-{##}
-{#            </div>#}
-{##}
-{#            <div class="form-group">#}
-{#                <div class="input-group">#}
-{#                <span class="input-group-addon" id="basic-addon1">Answer 2</span>#}
-{#                <input type="text" class="form-control" name="answer_text" id="answer_text" required>#}
-{#            </div>#}
-{#            <div class="input-group">#}
-{#                <span class="input-group-addon" id="basic-addon1">Value 2</span>#}
-{#                <input type="text" class="form-control" name="is_correct" id="is_correct" required>#}
-{#                </div>#}
-{#            </div>#}
-{##}
-{#            <div class="form-group">#}
-{#                <div class="input-group">#}
-{#                <span class="input-group-addon" id="basic-addon1">Answer 3</span>#}
-{#                <input type="text" class="form-control" name="answer_text" id="answer_text" required>#}
-{#            </div>#}
-{#            <div class="input-group">#}
-{#                <span class="input-group-addon" id="basic-addon1">Value 3</span>#}
-{#                <input type="text" class="form-control" name="is_correct" id="is_correct" required>#}
-{#                </div>#}
-{#            </div>#}
-{##}
-{#            <div class="form-group">#}
-{#                <input type="submit" class="btn btn-info" value="Add">#}
-{#            </div>#}
-{#        </form>#}
-{#    {% endif %}#}
-{#</div>#}
+{% if username %}
+    {% if add_question %}
+        <div>
+            <p>{{ add_question }}</p>
+        </div>
+        <form action="/exam/{{show_topic.id}}/addquestion/" method="post" class="form-horizontal" role="form">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <div class="col-sm-12">
+                    <div class="input-group">
+                        <span class="input-group-addon" id="basic-addon1">Questions text</span>
+                        <input type="text" class="form-control" name="question_text" id="question_text" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-6">
+                    <div class="input-group">
+                        <span class="input-group-addon" id="basic-addon1">Answer 1</span>
+                        <input type="text" class="form-control" name="answer_text_1" id="answer_text_1" required>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="input-group">
+                        <span class="input-group-addon" id="basic-addon1">Value 1</span>
+                        <input type="text" class="form-control" name="is_correct_1" id="is_correct_1" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-6">
+                    <div class="input-group">
+                        <span class="input-group-addon" id="basic-addon1">Answer 2</span>
+                        <input type="text" class="form-control" name="answer_text_2" id="answer_text_2" required>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="input-group">
+                        <span class="input-group-addon" id="basic-addon1">Value 2</span>
+                        <input type="text" class="form-control" name="is_correct_2" id="is_correct_2" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-6">
+                    <div class="input-group">
+                        <span class="input-group-addon" id="basic-addon1">Answer 3</span>
+                        <input type="text" class="form-control" name="answer_text_3" id="answer_text_3" required>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="input-group">
+                        <span class="input-group-addon" id="basic-addon1">Value 3</span>
+                        <input type="text" class="form-control" name="is_correct_3" id="is_correct_3" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-group">
+                <input type="submit" class="btn btn-info btn-block" value="Add Question">
+            </div>
+        </form>
+    {% endif %}
+{% endif %}
 
 {%endblock%}
