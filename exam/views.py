@@ -21,7 +21,23 @@ def show_list_of_topics(request):
     if not auth.get_user(request).is_staff:
     # Якщо авторизований студент, то показує його результат по кожній темі, яку він проходив
         args['marks_list_user'] = Result.objects.filter(student_id_id = auth.get_user(request).id)
+        max_mark_list=[]
+        for topic in args['show_list_of_topics']:
+            max_mark_list.append(show_max_mark_of_topic(topic))
+        args['max_mark_list'] = max_mark_list
     return render_to_response('exam/show_list_of_topics.html', args)
+#_______________________________________________________________________________________________________________________
+
+def show_max_mark_of_topic(topic_id):
+    # Повертає максимальний бал по кожній темі
+    show_questions = Question.objects.filter(topic_id_id = topic_id)
+    show_answers = Answer.objects.all()
+    answers_list = show_answers_list(show_questions, show_answers)
+    max_mark = 0
+    for answers in answers_list:
+        for answer in answers:
+            max_mark += answer.is_correct
+    return max_mark
 #_______________________________________________________________________________________________________________________
 
 def addtopic(request):
@@ -37,6 +53,8 @@ def addtopic(request):
 
 def show_answers_list(show_questions, show_answers):
     # Повертає СПИСОК ВАРІАНТІВ ВІДПОВІДЕЙ вибраної теми
+    # де show_questions - всі питання даної теми,
+    # а show_answers - всі відповіді по всіх темах
     answers_list = []
     for question in show_questions:
         answers_list.append(show_answers.filter(question_id_id = question.id))

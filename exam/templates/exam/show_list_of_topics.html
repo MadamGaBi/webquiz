@@ -7,14 +7,20 @@
     <div class="row">
     {% for topic in show_list_of_topics %}
         <div class="col-sm-6">
-            <div class="well">
+            <div class="well" style="height: auto">
                 <h2><a href="{{topic.id}}/"> {{topic.topic_name}} </a></h2>
                 <h5>{{topic.topic_description}}</h5>
                 {% if username %}
                     {% if marks_list_user %}
                         {% for mark in marks_list_user %}
                             {% if mark.topic_id_id = topic.id %}
-                                <h4> You Result Of This Topic Is {{mark}} .</h4>
+                                {% if max_mark_list %}
+                                    {% for max_mark in max_mark_list %}
+                                        {% if forloop.counter = topic.id %}
+                                            <h4> You Result Of This Topic Is {{ mark }}/{{ max_mark }} .</h4>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
                             {% endif %}
                         {% endfor %}
                     {% endif %}
