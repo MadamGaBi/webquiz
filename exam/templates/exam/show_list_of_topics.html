@@ -14,12 +14,8 @@
                     {% if marks_list_user %}
                         {% for mark in marks_list_user %}
                             {% if mark.topic_id_id = topic.id %}
-                                {% if max_mark_list %}
-                                    {% for max_mark in max_mark_list %}
-                                        {% if forloop.counter = topic.id %}
-                                            <h4> You Result Of This Topic Is {{ mark }}/{{ max_mark }} .</h4>
-                                        {% endif %}
-                                    {% endfor %}
+                                {% if topic.id %}
+                                            <h5> You Result Of This Topic Is <b>{{ mark }}</b>.</h5>
                                 {% endif %}
                             {% endif %}
                         {% endfor %}

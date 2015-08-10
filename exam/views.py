@@ -6,6 +6,7 @@ from .models import Tutor, Student, Topic, Question, Result, Answer
 from django.contrib import auth
 from django.core.context_processors import csrf
 from django.http import HttpResponseRedirect
+from django.core.exceptions import ObjectDoesNotExist
 
 # Create your views here.
 #_______________________________________________________________________________________________________________________
@@ -21,10 +22,6 @@ def show_list_of_topics(request):
     if not auth.get_user(request).is_staff:
     # Якщо авторизований студент, то показує його результат по кожній темі, яку він проходив
         args['marks_list_user'] = Result.objects.filter(student_id_id = auth.get_user(request).id)
-        max_mark_list=[]
-        for topic in args['show_list_of_topics']:
-            max_mark_list.append(show_max_mark_of_topic(topic))
-        args['max_mark_list'] = max_mark_list
     return render_to_response('exam/show_list_of_topics.html', args)
 #_______________________________________________________________________________________________________________________
 
@@ -79,6 +76,7 @@ def show_questions_of_topic(request, topic_id):
     args['show_answers'] = Answer.objects.all()
     args['answers_list'] = show_answers_list(args['show_questions'], args['show_answers'])
     args['username'] = auth.get_user(request).username
+    args['max_mark_of_topic']=(show_max_mark_of_topic(topic_id = topic_id))
 
     if auth.get_user(request).is_staff:
         # Якщо авторизований тьютор (з правами доступу до "admin site", is_staff = True)
@@ -121,8 +119,6 @@ def addquestion(request, topic_id):
 
 def result(request, topic_id):
     # Обчислює та повертає РЕЗУЛЬТАТ ТЕСТУ для студента
-    args = {}
-    args.update(csrf(request))
 
     def count_mark(answers_list, marks_value = 0):
         # Повертає ОЦІНКУ за весь тест з обраної теми,
@@ -136,16 +132,14 @@ def result(request, topic_id):
     if not auth.get_user(request).is_staff:
         # Якщо авторизований студент
         answers_list = show_answers_list(Question.objects.filter(topic_id_id = topic_id), Answer.objects.all())
-        if Result.objects.get(student_id_id = auth.get_user(request).id, topic_id_id = topic_id):
+        try:
             final_result = Result.objects.get(student_id_id = auth.get_user(request).id, topic_id_id = topic_id)
-        else:
+        except ObjectDoesNotExist:
             final_result = Result.objects.create(student_id_id = auth.get_user(request).id, topic_id_id = topic_id)
         # Викликає функцію обчислення загальної оцінки за весь тест
         final_result.mark = count_mark(answers_list)
         # та зберігає цю оцінку в базі даних
         final_result.save()
-        args['show_topic'] = Topic.objects.get(id = topic_id)
-        args['marks_value'] = final_result.mark
 
-    return redirect("/exam/", args)
+    return redirect("/exam/")
 #_______________________________________________________________________________________________________________________

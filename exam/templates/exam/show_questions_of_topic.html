@@ -14,31 +14,32 @@
                 </div>
             {% endif %}
 
-            {% for question in show_questions %}
-                <table class="table">
-                    <thead>
-                        <tr class="success">
-                            <th><b>{{question.question_text}}</b></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="info">
-                        <td>{% for answers in answers_list%}
-                            {% for answer in answers %}
-                                {% if answer.question_id_id = question.id %}
-                                    <div>
-                                        <input type="checkbox" name="answer" id="answer{{forloop.counter}}" value="{{answer.id}}"/>
-                                        <label for="answer{{forloop.counter}}">{{answer.answer_text}}</label>
-                                    </div>
-                                {% endif %}
-                            {% endfor %}
-                        {% endfor %}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            {% endfor %}
-
             {% if show_questions %}
+
+                <h5>Maximum Mark For This Topic Is  <b>{{max_mark_of_topic}}</b>. Good Luck!</h5>
+                {% for question in show_questions %}
+                    <table class="table">
+                        <thead>
+                            <tr class="success">
+                                <th><b>{{question.question_text}}</b></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="info">
+                            <td>{% for answers in answers_list%}
+                                {% for answer in answers %}
+                                    {% if answer.question_id_id = question.id %}
+                                        <div>
+                                            <input type="checkbox" name="answer" id="answer{{forloop.counter}}" value="{{answer.id}}"/>
+                                            <label for="answer{{forloop.counter}}">{{answer.answer_text}}</label>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endfor %}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                {% endfor %}
                 <div>
                     <input type="submit" value="Check" class="btn btn-large btn-block btn-primary">
                 </div>

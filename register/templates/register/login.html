@@ -22,7 +22,9 @@
 			    </div>
 
 		        {% if login_error %}
-			       <p><h2><label class="error">{{ login_error }}</label></h2></p>
+                    <div class="col-sm-offset-2 col-sm-10">
+			            <p><h2><label class="error">{{ login_error }}</label></h2></p>
+                    </div>
 		        {% endif %}
 
                 <div class="form-group">

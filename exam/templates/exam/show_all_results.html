@@ -12,11 +12,12 @@
                         <h4> {{error_msg}} </h4>
                     </div>
             {% else %}
+            <h4>Results</h4>
                 <table class="table">
                     <thead>
                         <tr class="success">
                             <th>Student</th>
-                            <th>Mark</th>
+                            <th>Mark / Max</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -25,7 +26,7 @@
                                 {% if mark.student_id_id = student.id %}
                                     <tr class="info">
                                         <td>{{student.first_name}} {{student.last_name}}</td>
-                                        <td>{{mark}}</td>
+                                        <td>{{mark}} / {{ max_mark_of_topic }}</td>
                                     </tr>
                                 {% endif %}
                             {% endfor %}
@@ -37,6 +38,34 @@
 </form>
 
 {% if username %}
+
+    {% if show_questions %}
+            <h4>Questions</h4>
+                {% for question in show_questions %}
+                    <table class="table">
+                        <thead>
+                            <tr class="success">
+                                <th><b>{{question.question_text}}</b></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="info">
+                            <td>{% for answers in answers_list%}
+                                {% for answer in answers %}
+                                    {% if answer.question_id_id = question.id %}
+                                        <div>
+                                            <label for="answer{{forloop.counter}}">{{forloop.counter}}. {{answer.answer_text}}</label>
+                                        </div>
+                                    {% endif %}
+                                {% endfor %}
+                            {% endfor %}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                {% endfor %}
+    {% endif %}
+
+
     {% if add_question %}
         <div>
             <p>{{ add_question }}</p>
